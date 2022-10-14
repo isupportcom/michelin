@@ -19,7 +19,7 @@
         <button
 
           class="myBtn col-8"
-
+          (click)="addToCart(product)"
           [disabled]="product.stock == 0"
           >
             Προσθήκη

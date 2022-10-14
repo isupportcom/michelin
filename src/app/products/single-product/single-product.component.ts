@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-
+import axios from 'axios';
+import { CartService } from 'src/app/services/cart.service';
 @Component({
   selector: 'app-single-product',
   templateUrl: './single-product.component.html',
@@ -7,9 +8,19 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class SingleProductComponent implements OnInit {
 @Input() product:any;
-  constructor() { }
+  constructor(
+    private cartService:CartService
+  ) { }
 
   ngOnInit(): void {
+  }
+  addToCart(product:any){
+    let loadedUser = JSON.parse(localStorage.getItem('user')||'{}');
+    this.cartService.addToCart(product).then((res:any)=>{
+      console.log(res);
+    })
+
+
   }
 
 }
