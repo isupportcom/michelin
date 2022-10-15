@@ -1,8 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, Subject, tap, throwError } from 'rxjs';
-import { AuthResponseData } from './login/login.component';
-import { User } from './models/user.model';
+import { AuthResponseData } from '../login/login.component';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -70,11 +70,14 @@ export class AuthService {
     return throwError(errorMessage);
   }
 
-  private handleAuthentication(username:string,userId:string,token:string,expiresIn:number,isAdmin:number) {
+  private handleAuthentication(username:string,userId:string,token:string,expiresIn:number,isAdmin:string) {
     const expirationDate = new Date(new Date().getTime() + +expiresIn * 1000*6);
     console.log(expirationDate);
+    console.log(isAdmin);
 
     const user = new User(username,userId,token,expirationDate,isAdmin);
+    console.log(user);
+
     this.user.next(user);
     localStorage.setItem('user',JSON.stringify(user));
 
@@ -103,7 +106,7 @@ export class AuthService {
       id: string,
       _token: string,
       _tokenExpirationDate: string,
-      isAdmin:number
+      isAdmin:string
 
   } = JSON.parse(localStorage.getItem('user')|| '{}');
   console.log(userData);
@@ -131,7 +134,7 @@ export class AuthService {
 }
 autoLogout(expirationDuration: number){
   console.log(expirationDuration/6000);
-  console.log(JSON.parse(localStorage.getItem('userData') || '{}'));
+
   this.tokenExpirationTimer = setTimeout(() => {
     this.logout();
   }, expirationDuration);

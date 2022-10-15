@@ -12,6 +12,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { ProductsComponent } from './products/products.component';
 import { SingleProductComponent } from './products/single-product/single-product.component';
 import { CartComponent } from './cart/cart.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { CartComponent } from './cart/cart.component';
     ProductsComponent,
     SingleProductComponent,
     CartComponent,
+    DashboardComponent,
 
   ],
   imports: [
