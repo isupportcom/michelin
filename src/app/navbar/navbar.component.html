@@ -16,7 +16,7 @@
         <a class="nav-link " routerLink="/cart">Cart</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link " *ngIf="loadedUser.isAdmin=='1'" routerLink="/dashboard">Dashboard</a>
+        <a class="nav-link " *ngIf="loadedUser.isAdmin" routerLink="/dashboard/products">Dashboard</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" (click)="logout()">Logout</a>

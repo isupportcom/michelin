@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import axios from 'axios';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -48,4 +49,10 @@ async clearAll(){
   });
   return req.data;
 }
+addImagePopup = new Subject<any>();
+cast = this.addImagePopup.asObservable();
+sendAddImagePopup(prod:any){
+  this.addImagePopup.next(prod);
+}
+
 }

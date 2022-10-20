@@ -12,12 +12,50 @@
     margin-top: 40px;
   "
 >
-  <app-single-product
+      <form class="form-contron" [formGroup]="serchProd" (ngSubmit)="findProduct()">
+        <label for="code">Cai</label>
+        <input
+          type="text"
+          class="form-control"
+          id="code"
+          placeholder="Enter Cai"
+          formControlName="code">
+        <label for="quantity">Quantity</label>
+        <input
+          type="number"
+          class="form-control"
+          id="quantity"
+          placeholder="Enter quantity"
+          formControlName="quantity">
+          <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Αναζητηση</button>
+      </form>
+
+      <table class="my-table table table-bordered">
+        <thead>
+          <tr >
+            <th class="heading">Name</th>
+            <th class="heading">Price</th>
+            <th class="heading">Availiability</th>
+            <th class="heading">Order</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr  *ngFor="let prod of avaliable">
+            <td class="heading" scope="row">{{prod.name}}</td>
+            <td class="heading" scope="row">10</td>
+            <td class="heading" scope="row">{{prod.available}}</td>
+            <td class="heading" scope="row"><tr *ngFor="let date of prod.dates;let index=index">{{date[0]}} | {{prod.qtys_on_date[index][0]}}</tr></td>
+
+          </tr>
+        </tbody>
+        </table>
+
+  <!-- <app-single-product
     *ngFor="let sProd of products"
     [product]="sProd"
     class="col col-xxl-6 col-xl-6 col-lg-6 col-md-5 col-sm-12 col-12 products"
     style="padding: 16px; padding-top: 0px; padding-bottom: 8px"
-  ></app-single-product>
+  ></app-single-product> -->
 </div>
 </div>
 </div>
