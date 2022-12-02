@@ -1,45 +1,55 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, Subject, tap, throwError } from 'rxjs';
-import { AuthResponseData } from '../login/login.component';
+import { EventEmitter, Injectable, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Subject, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
+import { catchError, reduce, tap } from "rxjs/operators";
 import { User } from '../models/user.model';
 
+export interface AuthResponseData{
+  kind: string;
+  token: string;
+  idToken: string;
+  username: string;
+  refreshToken: string;
+  expiresIn: string;
+  localId: string;
+  success: number;
+  address: string;
+  afm: string;
+  city: string;
+  doy: string;
+  name: string;
+  phone1: string;
+  phone2: string;
+  zip: string;
+  registered?: boolean;
+  isAdmin:number;
+  id:number;
+
+  trdr:number
+
+}
+
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
-  isAdmin:boolean = false;
-  isAuth:boolean = false;
   loggedIn = new Subject<boolean>();
   cast = this.loggedIn.asObservable();
   user = new BehaviorSubject<User | null>(null);
   private tokenExpirationTimer: any;
-  constructor(private http: HttpClient) {}
 
-  login(username: string, password: string) {
-    console.log(username, password);
-    return this.http
-      .post<AuthResponseData>('http://localhost:3000/auth/login', {
-        name: username,
-        password: password,
-        returnSecureToken: true,
-      })
-      .pipe(catchError(this.handleError),
-      tap((resData:any)=>{
-        console.log(resData);
+  constructor(private http: HttpClient, private router: Router) { }
 
-        if(resData.isAdmin==0){
-          this.isAdmin = false;
-        }else if(resData.isAdmin ==1 ){
-          this.isAdmin = false;
-        }
-        localStorage.setItem('username',resData.username);
-        this.handleAuthentication(resData.username,resData.id,resData.token,600,resData.isAdmin);
-      })
-      );
-  }
   sendLoggedIn(flag: boolean){
     this.loggedIn.next(flag);
+  }
+
+  isAuth:boolean = false;
+  isAdmin:boolean = false;
+  setAuthentication(value:boolean){
+    this.isAuth = value;
   }
   getAuthentication():boolean
   {
@@ -48,15 +58,116 @@ export class AuthService {
   setAdmin(value:boolean){
     this.isAdmin = value;
   }
-  getAdmin(){
+  getAdmin():boolean{
     return this.isAdmin;
   }
-  private handleError(errorRes: HttpErrorResponse) {
+
+  login(username: string, password: string){
+    console.log(username);
+    console.log(password)
+    return this.http.post<AuthResponseData>(
+      'https://localhost:3000/auth/login',
+      {
+        name: username,
+        password: password,
+        returnSecureToken: true
+      }
+    ).pipe(catchError(this.handleError), tap(resData => {
+
+      console.log(resData)
+
+      if(resData.isAdmin ==0){
+
+        localStorage.setItem("username", resData.name);
+        this.setAdmin(false);
+        console.log(resData.trdr)
+      }
+       else{
+         localStorage.setItem("username","Admin")
+        this.setAdmin(true);
+
+      }
+
+      this.handleAuthentication(resData.username,resData.id,resData.token,600,resData.address,this.getAdmin());
+
+
+      })
+    );
+  }
+
+  logout(){
+
+    this.user.next(null);
+    // console.log("hello");
+    console.log(JSON.parse(localStorage.getItem('userData') || '{}'));
+
+
+    localStorage.removeItem('userData');
+    localStorage.removeItem('username');
+
+    if(this.tokenExpirationTimer){
+      clearTimeout(this.tokenExpirationTimer);
+    }
+    this.tokenExpirationTimer = null;
+    window.location.reload();
+
+
+  }
+
+  autoLogin(){
+
+
+    const userData: {
+      username: string,
+      id: number,
+      _token: string,
+      _tokenExpirationDate: string,
+      address: string,
+     isAdmin:boolean
+
+    } = JSON.parse(localStorage.getItem('userData') || '{}');
+    if(!userData){
+      return;
+    }else{
+      let expiresIn = 600;
+      const expirationDate = new Date(new Date().getTime() + expiresIn * 1000 * 6);
+      console.log(expirationDate);
+
+      const user = new User(userData.username, userData.id, userData._token , expirationDate,userData.address,userData.isAdmin);
+      this.user.next(user);
+      // this.autoLogout(expiresIn * 1000);
+      localStorage.setItem('userData', JSON.stringify(user));
+    }
+
+    const loadedUser = new User(userData.username,userData.id,userData._token, new Date(userData._tokenExpirationDate),userData.address,userData.isAdmin);
+
+    console.log(new Date().getTime());
+
+
+    if(loadedUser.token){
+      this.user.next(loadedUser);
+      const expirationDuration =  new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
+      console.log(expirationDuration);
+
+
+      this.autoLogout(expirationDuration);
+    }
+  }
+
+  autoLogout(expirationDuration: number){
+    console.log(expirationDuration/6000);
+    console.log(JSON.parse(localStorage.getItem('userData') || '{}'));
+    this.tokenExpirationTimer = setTimeout(() => {
+      this.logout();
+    }, expirationDuration);
+  }
+
+  private handleError(errorRes: HttpErrorResponse){
     let errorMessage = 'An unknown error occured!';
-    if (!errorRes.error || !errorRes.error.error) {
+    if(!errorRes.error || !errorRes.error.error){
       return throwError(errorMessage);
     }
-    switch (errorRes.error.error.message) {
+    switch(errorRes.error.error.message){
       case 'username_EXISTS':
         errorMessage = 'This username already exists.';
         break;
@@ -70,74 +181,29 @@ export class AuthService {
     return throwError(errorMessage);
   }
 
-  private handleAuthentication(username:string,userId:string,token:string,expiresIn:number,isAdmin:string) {
-    const expirationDate = new Date(new Date().getTime() + +expiresIn * 1000*6);
+  private handleAuthentication(username: string, userId: number, token: string, expiresIn: number,address: string,isAdmin:boolean){
+    const expirationDate = new Date(new Date().getTime() + expiresIn * 1000 * 6);
     console.log(expirationDate);
-    console.log(isAdmin);
 
-    const user = new User(username,userId,token,expirationDate,isAdmin);
-    console.log(user);
-
+    const user = new User(username, userId, token , expirationDate,address,isAdmin);
     this.user.next(user);
-    localStorage.setItem('user',JSON.stringify(user));
+    console.log(user)
+    // this.autoLogout(expiresIn * 1000);
+    localStorage.setItem('userData', JSON.stringify(user));
+
 
     this.autoLogin();
-  }
-  logout(){
-
-    this.user.next(null);
-    // console.log("hello");
-    console.log(JSON.parse(localStorage.getItem('userData') || '{}'));
-
-
-    localStorage.removeItem('user');
-    localStorage.removeItem('username');
-
-    if(this.tokenExpirationTimer){
-      clearTimeout(this.tokenExpirationTimer);
-    }
-    this.tokenExpirationTimer = null;
-    window.location.reload();
 
   }
-  autoLogin(){
-    const userData: {
-      username: string,
-      id: string,
-      _token: string,
-      _tokenExpirationDate: string,
-      isAdmin:string
-
-  } = JSON.parse(localStorage.getItem('user')|| '{}');
-  console.log(userData);
-
-  if(!userData){
-    return;
-  }else{
-    let expiresIn = 600;
-    const expirationDate = new Date(new Date().getTime() + expiresIn * 1000 * 6);
-
-    const user = new User(userData.username,userData.id,userData._token,expirationDate,userData.isAdmin);
-    this.user.next(user);
-    localStorage.setItem("user",JSON.stringify(user));
-    const loadedUser = new User(userData.username,userData.id,userData._token, new Date(userData._tokenExpirationDate),userData.isAdmin);
-    console.log(new Date().getTime());
-    if(loadedUser.token){
-      this.user.next(loadedUser);
-      const expirationDuration =  new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
-      console.log(expirationDuration);
-
-
-       this.autoLogout(expirationDuration);
-    }
-  }
 }
-autoLogout(expirationDuration: number){
-  console.log(expirationDuration/6000);
 
-  this.tokenExpirationTimer = setTimeout(() => {
-    this.logout();
-  }, expirationDuration);
 
-}
-}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,8 @@
+.my-table{
+  min-width: 640px;
+  margin: 8px 16px;
+}
+/* center text in th */
+.heading {
+  text-align: center;
+}
