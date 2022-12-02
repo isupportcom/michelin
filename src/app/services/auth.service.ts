@@ -19,7 +19,7 @@ export class AuthService {
   login(username: string, password: string) {
     console.log(username, password);
     return this.http
-      .post<AuthResponseData>('https://michelinapi.vinoitalia.gr/login.php', {
+      .post<AuthResponseData>('http://localhost:3000/auth/login', {
         name: username,
         password: password,
         returnSecureToken: true,
