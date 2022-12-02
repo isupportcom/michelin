@@ -33,19 +33,32 @@
       <table class="my-table table table-bordered">
         <thead>
           <tr >
-            <th class="heading">Name</th>
-            <th class="heading">Price</th>
-            <th class="heading">Availiability</th>
-            <th class="heading">Order</th>
+            <th class="heading">Όνομα</th>
+            <th class="heading">Τιμή</th>
+            <th class="heading">Διαθεσιμότητα</th>
+            <th class="heading">Παραγγελεία</th>
+            <th class="heading">Ομαδα</th>
+            <th class="heading">Μάρκα</th>
+            <th class="heading">Ζάντα</th>
+            <th class="heading">Εποχή</th>
+            <th class="heading">Ημερομηνια Αναναιωσης</th>
+            <th class="heading">Αποθεμα Θεσσαλονικης</th>
+            <th class="heading">Αποθεμα Αθηνας</th>
             </tr>
         </thead>
         <tbody>
           <tr  *ngFor="let prod of avaliable">
-            <td class="heading" scope="row">{{prod.name}}</td>
+            <td class="heading" scope="row">{{prod.product[0].name}}</td>
             <td class="heading" scope="row">10</td>
             <td class="heading" scope="row">{{prod.available}}</td>
             <td class="heading" scope="row"><tr *ngFor="let date of prod.dates;let index=index">{{date[0]}} | {{prod.qtys_on_date[index][0]}}</tr></td>
-
+            <th class="heading">{{prod.product[0].omada}}</th>
+            <th class="heading">{{prod.product[0].marka}}</th>
+            <th class="heading">{{prod.product[0].zanta}}</th>
+            <th class="heading">{{prod.product[0].epoxi}}</th>
+            <th class="heading">{{prod.product[0].upddate}}</th>
+            <th class="heading">{{prod.product[0].apothema_thess}}</th>
+            <th class="heading">{{prod.product[0].apothema_athens}}</th>
           </tr>
         </tbody>
         </table>
