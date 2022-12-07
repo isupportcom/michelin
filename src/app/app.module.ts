@@ -10,8 +10,6 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ProductsComponent } from './products/products.component';
-import { SingleProductComponent } from './products/single-product/single-product.component';
-import { CartComponent } from './cart/cart.component';
 
 
 @NgModule({
@@ -21,8 +19,6 @@ import { CartComponent } from './cart/cart.component';
     LoginComponent,
     NavbarComponent,
     ProductsComponent,
-    SingleProductComponent,
-    CartComponent
 
   ],
   imports: [
