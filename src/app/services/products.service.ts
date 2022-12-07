@@ -22,7 +22,7 @@ export class ProductsService {
         qty:qty
     })
       // return req.data;
-    console.log(req.data.response.deliver_dates);
+    console.log(req.data);
     for(let i =0 ; i <req.data.response.deliver_dates.length;i++){
         this.delivery_date_arr[i] = req.data.response.deliver_dates[i].delivery_date
         this.available_dates[i] =req.data.response.deliver_dates[i].quantity_valiue
@@ -31,7 +31,8 @@ export class ProductsService {
       name: req.data.product_name[0],
       available : req.data.response.availability.avaliable[0],
       dates : this.delivery_date_arr,
-      qtys_on_date : this.available_dates
+      qtys_on_date : this.available_dates,
+      product: req.data.product
     }
     // console.log(req.data);
 
