@@ -64,7 +64,8 @@ export class ProductsService {
       trdr : this.loadedUser.id,
       qty :qty,
       availability :product.available,
-      dates : product.dates.join(',')
+      dates : product.dates.join(','),
+      qtysonDate : product.qtys_on_date.join(',')
     })
     .then(resData=>{
       console.log(resData.data)
