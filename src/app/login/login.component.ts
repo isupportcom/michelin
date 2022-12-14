@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
+import axios from 'axios';
 import { Observable } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 export interface AuthResponseData{
@@ -39,8 +40,12 @@ export class LoginComponent implements OnInit {
     authObs = this.authService.login(this.loginForm.value.username,this.loginForm.value.password);
     authObs.subscribe(resData=>{
       console.log(resData);
+      axios.post('https:///michelinApi.vinoitalia.gr/products/updateStock.php',{method:"STOCKUPDATE"})
+                .then(resData=>{
+                  console.log(resData.data);
+                  this.router.navigate(['home']);
+                })
 
-      this.router.navigate(['home']);
 
     })
   }

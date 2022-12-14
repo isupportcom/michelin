@@ -1,0 +1,54 @@
+<app-navbar></app-navbar>
+
+
+<div style="z-index: -1000"></div>
+
+<div class="container" style="margin-top: 78px; margin-bottom: 78px">
+  <div class="row">
+    <div
+      class="row"
+      style="
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        margin-top: 40px;
+      "
+    >
+
+
+      <table class="my-table table table-bordered">
+        <thead>
+          <tr>
+            <th class="heading">Όνομα</th>
+            <th class="heading">Τιμή</th>
+            <th class="heading">Ποσοτητα</th>
+            <th class="heading">Διαθεσιμότητα</th>
+            <th class="heading">Παραγγελεία</th>
+            <th class="heading">Ομαδα</th>
+            <th class="heading">Μάρκα</th>
+            <th class="heading">Ζάντα</th>
+            <th class="heading">Εποχή</th>
+            <th class="heading">Ημερομηνια Αναναιωσης</th>
+            <th class="heading">Αποθεμα Θεσσαλονικης</th>
+            <th class="heading">Αποθεμα Αθηνας</th>
+            <th class="heading">Aφαιρεση</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="products">
+          <tr *ngFor="let prod of products">
+            <th class="heading">{{ prod.name }}</th>
+            <th class="heading">{{prod.price}}</th>
+            <th class="heading">{{prod.qty}}</th>
+            <th class="heading">{{prod.availability}}</th>
+            <th class="heading">{{prod.date}}</th>
+            <th class="heading">{{prod.omada}}</th>
+            <th class="heading">{{prod.marka}}</th>
+            <th class="heading">{{prod.zanta}}</th>
+            <th class="heading">{{prod.epoxi}}</th>
+            <th class="heading">{{prod.upddate}}</th>
+            <th class="heading">{{prod.apothema_thess}}</th>
+            <th class="heading">{{prod.apothema_athens}}</th>
+            <th class="headig"><button (click)="removeCartItem(prod)">Remove</button></th>
+          </tr>
+        </tbody>
+        </table>

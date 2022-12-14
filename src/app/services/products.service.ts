@@ -15,58 +15,60 @@ export class ProductsService {
     console.log(request.data.data)
     return request.data.data;
   }
-  async findProduct(code:string,qty:number){
-
-    let req = await axios.post("https://michelinapi.vinoitalia.gr/xmls/xmlReq.php",{
+  async findProduct(code:string,qty:number,name:string,id:number){
+    let req;
+    if(id ==2 ){
+       req = await axios.post("https://michelinNodeRest.vinoitalia.gr/michelin/order",{
+        name:name,
+        qty:qty
+    })
+    console.log(req.data);
+    return req.data.product
+    }else{
+      console.log(code,qty);
+       req = await axios.post("https://michelinNodeRest.vinoitalia.gr/michelin/order",{
         cai:code,
         qty:qty
     })
-      // return req.data;
-    console.log(req.data);
-    for(let i =0 ; i <req.data.response.deliver_dates.length;i++){
-        this.delivery_date_arr[i] = req.data.response.deliver_dates[i].delivery_date
-        this.available_dates[i] =req.data.response.deliver_dates[i].quantity_valiue
+
+    console.log(req.data)
+    for(let i =0 ; i <req.data.response.delivery_dates.length;i++){
+        this.delivery_date_arr[i] = req.data.response.delivery_dates[i].delivery_dates
+        this.available_dates[i] =req.data.response.delivery_dates[i].quantity_valiue
     }
     return {
       name: req.data.product_name[0],
-      available : req.data.response.availability.avaliable[0],
+      available : req.data.response.availability[0].avaliable,
       dates : this.delivery_date_arr,
       qtys_on_date : this.available_dates,
       product: req.data.product
     }
-    // console.log(req.data);
 
-    // for(let i =0; i< req.data.response.deliver_dates.length;i++){
-    //   this.delivery_date_arr[i] = req.data.response.deliver_dates[i].delivery_date[0];
-    //   this.available_dates[i]=req.data.response.deliver_dates[i].quantity_valiue[0];
-
-    // }
-    // console.log(req.data.product_name[0]);
-    // console.log(this.delivery_date_arr);
-    // console.log(this.available_dates)
-    // console.log(this.available_dates.join(','));
-    // console.log(this.delivery_date_arr.join(","),);
-    // console.log(req.data.response.availability.avaliable[0]);
-    // console.log(this.loadedUser.id);
+    }
 
 
-
-
-    // let req2 = await axios.post("https://michelinapi.vinoitalia.gr/xmls/saveProduct.php",{
-    //   name:req.data.product_name[0],
-    //   price:"10$",
-    //   delivery_date:this.delivery_date_arr.join(","),
-    //   available: req.data.response.availability.avaliable[0],
-    //   trdr: this.loadedUser.id,
-    //   delivery_availability: this.available_dates.join(',')
-    // })
-    // return req2.data;
   }
   async getProds(){
     let req = await axios.post("https://michelinapi.vinoitalia.gr/xmls/getAllSaved.php",{
       trdr:this.loadedUser.id
     })
     return req.data;
+  }
+
+  addToCart(product:any,qty:any){
+    console.log(this.loadedUser);
+    console.log(product);
+    console.log(qty);
+    axios.post('https://michelinNodeRest.vinoitalia.gr/products/addToCart',{
+      mtrl : product.product.mtrl,
+      trdr : this.loadedUser.id,
+      qty :qty,
+      availability :product.available,
+      dates : product.dates.join(',')
+    })
+    .then(resData=>{
+      console.log(resData.data)
+    })
   }
 
 }

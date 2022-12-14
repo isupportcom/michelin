@@ -66,7 +66,7 @@ export class AuthService {
     console.log(username);
     console.log(password)
     return this.http.post<AuthResponseData>(
-      'http://localhost:3000/auth/login',
+      'https://michelinNodeRest.vinoitalia.gr/auth/login',
       {
         name: username,
         password: password,

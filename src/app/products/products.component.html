@@ -1,38 +1,54 @@
 <app-navbar></app-navbar>
-<div style="z-index: -1000;"></div>
+<div style="z-index: -1000"></div>
 
-<div class="container" style="margin-top: 78px;margin-bottom: 78px;">
-    <div class="row">
-<div
-  class="row"
-  style="
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    margin-top: 40px;
-  "
->
-      <form class="form-contron" [formGroup]="serchProd" (ngSubmit)="findProduct()">
+<div class="container">
+  <div class="row">
+    <div
+      class="row"
+      style="
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        margin-top: 40px;
+      "
+    >
+      <form
+        class="form-contron"
+        [formGroup]="serchProd"
+        (ngSubmit)="findProduct()"
+      >
         <label for="code">Cai</label>
         <input
           type="text"
           class="form-control"
           id="code"
           placeholder="Enter Cai"
-          formControlName="code">
+          formControlName="code"
+        />
+        <label>Αναζητηση Ονοματος</label>
+        <input
+          type="text"
+          class="form-control"
+          id="code"
+          placeholder="Enter Cai"
+          formControlName="name"
+        />
         <label for="quantity">Quantity</label>
         <input
           type="number"
           class="form-control"
           id="quantity"
           placeholder="Enter quantity"
-          formControlName="quantity">
-          <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Αναζητηση</button>
+          formControlName="quantity"
+        />
+        <button type="submit" class="btn btn-primary" style="margin-top: 10px">
+          Αναζητηση
+        </button>
       </form>
 
-      <table class="my-table table table-bordered">
+      <table class="table table-bordered">
         <thead>
-          <tr >
+          <tr>
             <th class="heading">Όνομα</th>
             <th class="heading">Τιμή</th>
             <th class="heading">Διαθεσιμότητα</th>
@@ -44,31 +60,66 @@
             <th class="heading">Ημερομηνια Αναναιωσης</th>
             <th class="heading">Αποθεμα Θεσσαλονικης</th>
             <th class="heading">Αποθεμα Αθηνας</th>
-            </tr>
+            <th class="heading">Ποσότητα</th>
+            <th class="heading">Προσθήκη Στο Καλάθι</th>
+          </tr>
         </thead>
-        <tbody>
-          <tr  *ngFor="let prod of avaliable">
-            <td class="heading" scope="row">{{prod.product[0].name}}</td>
-            <td class="heading" scope="row">10</td>
-            <td class="heading" scope="row">{{prod.available}}</td>
-            <td class="heading" scope="row"><tr *ngFor="let date of prod.dates;let index=index">{{date[0]}} | {{prod.qtys_on_date[index][0]}}</tr></td>
-            <th class="heading">{{prod.product[0].omada}}</th>
-            <th class="heading">{{prod.product[0].marka}}</th>
-            <th class="heading">{{prod.product[0].zanta}}</th>
-            <th class="heading">{{prod.product[0].epoxi}}</th>
-            <th class="heading">{{prod.product[0].upddate}}</th>
-            <th class="heading">{{prod.product[0].apothema_thess}}</th>
-            <th class="heading">{{prod.product[0].apothema_athens}}</th>
+        <tbody *ngIf="avaliable">
+          <tr *ngFor="let prod of avaliable">
+            <td class="heading" scope="row">{{ prod.product.name }}</td>
+            <td class="heading" scope="row">{{ prod.product.price }}</td>
+            <td class="heading" scope="row">{{ prod.available }}</td>
+            <td class="heading" scope="row">
+              <tr *ngFor="let date of prod.dates; let index = index">
+                {{
+                  date
+                }}
+                |
+                {{
+                  prod.qtys_on_date[index]
+                }}
+              </tr>
+            </td>
+            <th class="heading">{{ prod.product.omada }}</th>
+            <th class="heading">{{ prod.product.marka }}</th>
+            <th class="heading">{{ prod.product.zanta }}</th>
+            <th class="heading">{{ prod.product.epoxi }}</th>
+            <th class="heading">{{ prod.product.upddate }}</th>
+            <th class="heading">{{ prod.product.apothema_thess }}</th>
+            <th class="heading">{{ prod.product.apothema_athens }}</th>
+            <th class="heading"><input placeholder="Ποσότητα" type="number" [(ngModel)]="qty"></th>
+            <th class="heading"><button (click)="addToCart(prod)">Προσθήκη</button></th>
           </tr>
         </tbody>
-        </table>
+        <tbody *ngIf="products">
+          <tr *ngFor="let prod of products">
+            <td class="heading" scope="row">{{ prod.name }}</td>
+            <td class="heading" scope="row">{{ prod.price }}</td>
+            <td class="heading" scope="row">-</td>
+            <td class="heading" scope="row">
+              <tr>
+               <button (click)="selectProd(prod.cai)">SELECT</button>
+              </tr>
+            </td>
+            <th class="heading">{{ prod.omada }}</th>
+            <th class="heading">{{ prod.marka }}</th>
+            <th class="heading">{{ prod.zanta }}</th>
+            <th class="heading">{{ prod.epoxi }}</th>
+            <th class="heading">{{ prod.upddate }}</th>
+            <th class="heading">{{ prod.apothema_thess }}</th>
+            <th class="heading">{{ prod.apothema_athens }}</th>
+            <th class="heading"><button [disabled]="true">Προσθήκη</button></th>
+            <th class="heading"><input [disabled]="true" placeholder="Ποσότητα"></th>
+          </tr>
+        </tbody>
+      </table>
 
-  <!-- <app-single-product
-    *ngFor="let sProd of products"
+      <!-- <app-single
+    *ngFor="let sProd ofs"
     [product]="sProd"
     class="col col-xxl-6 col-xl-6 col-lg-6 col-md-5 col-sm-12 col-12 products"
     style="padding: 16px; padding-top: 0px; padding-bottom: 8px"
   ></app-single-product> -->
-</div>
-</div>
+    </div>
+  </div>
 </div>
