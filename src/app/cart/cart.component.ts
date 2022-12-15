@@ -9,6 +9,7 @@ import { CartService } from '../services/cart.service';
 })
 export class CartComponent implements OnInit {
   loadedUser = JSON.parse(localStorage.getItem('userData')||'{}');
+  message:string = ""
   products:any;
   constructor(
     private cartService : CartService
@@ -30,5 +31,7 @@ export class CartComponent implements OnInit {
       this.products = await this.cartService.removeCartItem(product);
       console.log(this.products);
   }
-
+  async order(){
+   this.message=await this.cartService.order(this.products) + " Order Completed";
+  }
 }
