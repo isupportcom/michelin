@@ -14,25 +14,25 @@ export class UpdateProductsComponent implements OnInit {
     console.log("Hello")
   }
   updte(){
-    axios.post('https:///michelinApi.vinoitalia.gr/products/updateProduct.php',{method:"MTRLUPDATE"})
+    axios.post('https://michelinNodeRest.vinoitalia.gr/products/updateProducts',{method:"MTRLUPDATE"})
     .then(resData=>{
       console.log(resData.data)
-      axios.post('https://michelinApi.vinoitalia.gr/categories/updateModel.php',{method:"MTRMODEL"})
+      axios.post('https://michelinNodeRest.vinoitalia.gr/products/updateModel',{method:"MTRMODEL"})
       .then(resData=>{
         console.log(resData.data)
-        axios.post('https://michelinApi.vinoitalia.gr/categories/updateCategories.php',{method:"MTRCATEGORY"})
+        axios.post('https://michelinNodeRest.vinoitalia.gr/products/updateCategories',{method:"MTRCATEGORY"})
         .then(resData=>{
           console.log(resData.data);
-          axios.post('https://michelinApi.vinoitalia.gr/categories/updateGroup.php',{method:"MTRGROUP"})
+          axios.post('https://michelinNodeRest.vinoitalia.gr/products/updateGroup',{method:"MTRGROUP"})
           .then(resData=>{
             console.log(resData.data);
-            axios.post("https://michelinApi.vinoitalia.gr/categories/updateManfctr.php",{method:"MTRMANFCTR"})
+            axios.post("https://michelinNodeRest.vinoitalia.gr/products/updateManfctr",{method:"MTRMANFCTR"})
             .then(resData=>{
               console.log(resData.data);
-              axios.post('https://michelinApi.vinoitalia.gr/categories/updateMark.php',{method:"MTRMARK"})
+              axios.post('https://michelinNodeRest.vinoitalia.gr/products/updateMark',{method:"MTRMARK"})
               .then(resData=>{
                 console.log(resData.data);
-                axios.post('https:///michelinApi.vinoitalia.gr/products/updateStock.php',{method:"STOCKUPDATE"})
+                axios.post('https://michelinNodeRest.vinoitalia.gr/products/updateStock',{method:"STOCKUPDATE"})
                 .then(resData=>{
                   console.log(resData.data);
                   this.message = "Products Updated";
