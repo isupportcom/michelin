@@ -10,11 +10,6 @@ export class ProductsService {
   available_dates:any = [];
   constructor() { }
 
-  async getProducts(){
-    let request = await axios.post("https://michelinapi.vinoitalia.gr/products/getProducts.php",{method:"ALLPRODUCTS"})
-    console.log(request.data.data)
-    return request.data.data;
-  }
   async findProduct(code:string,qty:number,name:string,id:number){
     let req;
     if(id ==2 ){
@@ -34,11 +29,11 @@ export class ProductsService {
     console.log(req.data)
     for(let i =0 ; i <req.data.response.delivery_dates.length;i++){
         this.delivery_date_arr[i] = req.data.response.delivery_dates[i].delivery_dates
-        this.available_dates[i] =req.data.response.delivery_dates[i].quantity_valiue
+        this.available_dates[i] =req.data.response.delivery_dates[i].quantity_value
     }
     return {
       name: req.data.product_name[0],
-      available : req.data.response.availability[0].avaliable,
+      available : req.data.response.availability[0].available,
       dates : this.delivery_date_arr,
       qtys_on_date : this.available_dates,
       product: req.data.product
@@ -59,13 +54,12 @@ export class ProductsService {
     console.log(this.loadedUser);
     console.log(product);
     console.log(qty);
-    axios.post('https://michelinNodeRest.vinoitalia.gr/products/addToCart',{
-      mtrl : product.product.mtrl,
-      trdr : this.loadedUser.id,
-      qty :qty,
-      availability :product.available,
-      dates : product.dates.join(','),
-      qtysonDate : product.qtys_on_date.join(',')
+    // https://michelinNodeRest.vinoitalia.gr/products/addToCart
+    //http://localhost:3001/products/addToCart
+    axios.post('http://localhost:3001/products/addToCart',{
+      qty:qty,
+      trdr:"5785",
+      product : product
     })
     .then(resData=>{
       console.log(resData.data)
