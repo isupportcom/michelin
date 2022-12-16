@@ -25,7 +25,6 @@ export class ProductsComponent implements OnInit {
       name: null,
     });
 
-    // this.products = await this.productsService.getProducts();
   }
 
   async findProduct() {

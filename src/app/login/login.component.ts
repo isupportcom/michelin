@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
     authObs = this.authService.login(this.loginForm.value.username,this.loginForm.value.password);
     authObs.subscribe(resData=>{
       console.log(resData);
-      axios.post('https:///michelinApi.vinoitalia.gr/products/updateStock.php',{method:"STOCKUPDATE"})
+      axios.post('https://michelinNodeRest.vinoitalia.gr/products/updateStock',{method:"STOCKUPDATE"})
                 .then(resData=>{
                   console.log(resData.data);
                   this.router.navigate(['home']);
